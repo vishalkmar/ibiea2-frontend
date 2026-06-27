@@ -160,4 +160,25 @@ export const api = {
   adminGenerateStalls: (rows, cols) => request('/admin/stalls/generate', { method: 'POST', body: { rows, cols }, authed: true }),
   adminDeleteStall: (id) => request(`/admin/stalls/${id}`, { method: 'DELETE', authed: true }),
   adminExhibitorPasses: (id) => request(`/admin/exhibitors/${id}/passes`, { authed: true }),
+
+  // Plans CRUD — exhibitor packages + sponsor tiers
+  adminPackages: () => request('/admin/packages', { authed: true }),
+  adminAddPackage: (payload) => request('/admin/packages', { method: 'POST', body: payload, authed: true }),
+  adminUpdatePackage: (id, payload) => request(`/admin/packages/${id}`, { method: 'PATCH', body: payload, authed: true }),
+  adminDeletePackage: (id) => request(`/admin/packages/${id}`, { method: 'DELETE', authed: true }),
+  adminTiers: () => request('/admin/tiers', { authed: true }),
+  adminAddTier: (payload) => request('/admin/tiers', { method: 'POST', body: payload, authed: true }),
+  adminUpdateTier: (id, payload) => request(`/admin/tiers/${id}`, { method: 'PATCH', body: payload, authed: true }),
+  adminDeleteTier: (id) => request(`/admin/tiers/${id}`, { method: 'DELETE', authed: true }),
+
+  // Tax invoice (admin uploads per exhibitor)
+  adminUploadInvoice: (id, file) => uploadFile(`/admin/exhibitors/${id}/invoice`, file),
+  adminDeleteInvoice: (id) => request(`/admin/exhibitors/${id}/invoice`, { method: 'DELETE', authed: true }),
+
+  // Sponsor branding deliverables management
+  adminDeliverables: (sponsorId) => request(`/admin/sponsors/${sponsorId}/deliverables`, { authed: true }),
+  adminAddDeliverable: (sponsorId, payload) => request(`/admin/sponsors/${sponsorId}/deliverables`, { method: 'POST', body: payload, authed: true }),
+  adminUpdateDeliverable: (id, payload) => request(`/admin/deliverables/${id}`, { method: 'PATCH', body: payload, authed: true }),
+  adminUploadDeliverableProof: (id, file) => uploadFile(`/admin/deliverables/${id}/proof`, file),
+  adminDeleteDeliverable: (id) => request(`/admin/deliverables/${id}`, { method: 'DELETE', authed: true }),
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { NAV_LINKS, EVENT } from '../../data/siteData';
+import { NAV_LINKS } from '../../data/siteData';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,15 +24,12 @@ export default function Navbar() {
       }`}
     >
       <nav className="container-x flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="flex flex-col leading-none">
-            <span className="font-display font-black text-2xl tracking-tight text-cream">
-              IBIEA <span className="text-gradient-gold">2.0</span>
-            </span>
-            <span className="text-[10px] tracking-[0.25em] uppercase text-gold/70">
-              by {EVENT.parentBrand}
-            </span>
-          </div>
+        <Link to="/" className="flex items-center group" aria-label="IBIEA 2.0 — Home">
+          <img
+            src="/LogoIBIEA2026.png"
+            alt="IBIEA 2.0"
+            className={`w-auto object-contain transition-all duration-300 ${scrolled ? 'h-11' : 'h-14'}`}
+          />
         </Link>
 
         <ul className="hidden lg:flex items-center gap-1">

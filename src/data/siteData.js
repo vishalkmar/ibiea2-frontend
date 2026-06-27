@@ -90,28 +90,41 @@ export const STATS = [
   { value: 12, suffix: '+', label: 'Award Categories' },
 ];
 
+const IMG = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=80`;
+
 export const INDUSTRY_SEGMENTS = [
   { id: 'developers', name: 'Real Estate Developers', icon: 'Building2', featured: true,
+    img: IMG('photo-1448630360428-65456885c650'),
     desc: 'Residential, commercial & mixed-use project developers — the 2026 spotlight segment.' },
   { id: 'builders', name: 'Builders', icon: 'HardHat',
+    img: IMG('photo-1504307651254-35680f356dfd'),
     desc: 'Construction firms executing development and infrastructure projects.' },
   { id: 'consultants', name: 'Property Consultants', icon: 'Handshake',
+    img: IMG('photo-1560518883-ce09059eeffa'),
     desc: 'Brokerage, advisory and transaction facilitation firms.' },
   { id: 'interior', name: 'Interior Designers', icon: 'Sofa',
+    img: IMG('photo-1586023492125-27b2c045efd7'),
     desc: 'Residential and commercial interior design practices and studios.' },
   { id: 'decor', name: 'Home Decor Brands', icon: 'Lamp',
+    img: IMG('photo-1556228453-efd6c1ff04f6'),
     desc: 'Furnishing, fixtures, fittings and decorative product brands.' },
   { id: 'materials', name: 'Construction Materials', icon: 'Package',
+    img: IMG('photo-1503387762-592deb58ef4e'),
     desc: 'Manufacturers and distributors of building materials.' },
   { id: 'smarthome', name: 'Smart Home Technology', icon: 'Cpu',
+    img: IMG('photo-1558002038-1055907df827'),
     desc: 'Home automation, IoT and connected-living solution providers.' },
   { id: 'architects', name: 'Architects', icon: 'Compass',
+    img: IMG('photo-1487958449943-2429e8be8625'),
     desc: 'Architectural design and planning practices.' },
   { id: 'infrastructure', name: 'Infrastructure Companies', icon: 'Construction',
+    img: IMG('photo-1545459720-aac8509eb02c'),
     desc: 'Large-scale infrastructure development and engineering firms.' },
   { id: 'finance', name: 'Financial & Mortgage', icon: 'Landmark',
+    img: IMG('photo-1554224155-6726b3ff858f'),
     desc: 'Banks, NBFCs and mortgage facilitation providers for real estate.' },
   { id: 'proptech', name: 'PropTech', icon: 'Rocket',
+    img: IMG('photo-1518770660439-4636190af475'),
     desc: 'Technology platforms and startups innovating across the property lifecycle.' },
 ];
 
@@ -155,30 +168,42 @@ export const EXHIBITOR_PACKAGES = [
 export const AWARD_CATEGORIES = [
   // Developer-led (2026 theme — listed first)
   { id: 'dev-year', group: 'Developer Awards (2026 Theme)', name: 'Developer of the Year', themed: true,
+    img: IMG('photo-1486406146926-c627a92ad1ab'),
     desc: 'Recognising the developer demonstrating outstanding excellence across delivery, innovation and impact.' },
   { id: 'mixed-use', group: 'Developer Awards (2026 Theme)', name: 'Best Mixed-Use Project', themed: true,
+    img: IMG('photo-1577495508048-b635879837f1'),
     desc: 'Awarded to the most outstanding mixed-use development brought to market.' },
   { id: 'masterplan', group: 'Developer Awards (2026 Theme)', name: 'Best Master-Planned Community', themed: true,
+    img: IMG('photo-1448630360428-65456885c650'),
     desc: 'Celebrating excellence in large-scale, master-planned community development.' },
   { id: 'residential', group: 'Developer Awards (2026 Theme)', name: 'Best Residential Project', themed: true,
+    img: IMG('photo-1512917774080-9991f1c4c750'),
     desc: 'Honouring the finest residential development of the year.' },
   // Cross-industry
   { id: 'proptech-innov', group: 'Industry Excellence', name: 'PropTech Innovation Award',
+    img: IMG('photo-1518770660439-4636190af475'),
     desc: 'For the most innovative technology platform transforming the property lifecycle.' },
   { id: 'interior-exc', group: 'Industry Excellence', name: 'Interior Design Excellence',
+    img: IMG('photo-1586023492125-27b2c045efd7'),
     desc: 'Recognising exceptional residential or commercial interior design.' },
   { id: 'architect', group: 'Industry Excellence', name: 'Architectural Design Award',
+    img: IMG('photo-1487958449943-2429e8be8625'),
     desc: 'Celebrating outstanding architectural vision and execution.' },
   { id: 'sustainable', group: 'Industry Excellence', name: 'Sustainable Development Award',
+    img: IMG('photo-1518005020951-eccb494ad742'),
     desc: 'For projects setting the benchmark in sustainable, green development.' },
   { id: 'smart-home', group: 'Industry Excellence', name: 'Smart Home Solution of the Year',
+    img: IMG('photo-1558002038-1055907df827'),
     desc: 'Honouring the best connected-living and home automation solution.' },
   // Cross-cutting
   { id: 'leader', group: 'Special Recognition', name: 'Real Estate Business Leader of the Year',
+    img: IMG('photo-1560250097-0b93528c311a'),
     desc: 'The overall industry leadership honour across the real estate ecosystem.' },
   { id: 'lifetime', group: 'Special Recognition', name: 'Lifetime Achievement Award',
+    img: IMG('photo-1567427017947-545c5f8d16ad'),
     desc: 'Recognising a lifetime of contribution to the real estate and business community.' },
   { id: 'rising', group: 'Special Recognition', name: 'Rising Star Award',
+    img: IMG('photo-1556761175-5973dc0f32e7'),
     desc: 'For emerging companies and individuals making a remarkable early impact.' },
 ];
 
@@ -223,10 +248,10 @@ export const SPONSORS_SHOWCASE = [
 export const FAMILY_TOUR = {
   intro: "Turn a business trip into a family experience. While you attend the Expo and Awards, your family can explore Oman's deserts, mountains and coastline.",
   itinerary: [
-    { day: 'Day 1', title: 'Muscat City & Old Town', desc: 'Grand Mosque, Mutrah Souq, Royal Opera House and the Corniche.' },
-    { day: 'Day 2', title: 'Desert Dune Adventure', desc: 'Wahiba Sands dune drive, Bedouin hospitality and a desert sunset camp.' },
-    { day: 'Day 3', title: 'Wadis & Mountains', desc: 'Wadi Shab natural pools and the dramatic Hajar mountain landscapes.' },
-    { day: 'Day 4', title: 'Coastal & Dhow Cruise', desc: 'A traditional dhow cruise along the coast and a farewell seaside experience.' },
+    { day: 'Day 1', title: 'Muscat City & Old Town', img: IMG('photo-1518684079-3c830dcef090'), desc: 'Grand Mosque, Mutrah Souq, Royal Opera House and the Corniche.' },
+    { day: 'Day 2', title: 'Desert Dune Adventure', img: IMG('photo-1547234935-80c7145ec969'), desc: 'Wahiba Sands dune drive, Bedouin hospitality and a desert sunset camp.' },
+    { day: 'Day 3', title: 'Wadis & Mountains', img: IMG('photo-1469474968028-56623f02e42e'), desc: 'Wadi Shab natural pools and the dramatic Hajar mountain landscapes.' },
+    { day: 'Day 4', title: 'Coastal & Dhow Cruise', img: IMG('photo-1507525428034-b723cf961d3e'), desc: 'A traditional dhow cruise along the coast and a farewell seaside experience.' },
   ],
   includes: ['Private transport', 'Professional guide', 'Daily meals', 'Activity & entry tickets'],
 };
@@ -246,5 +271,6 @@ export const NAV_LINKS = [
   { to: '/awards', label: 'Awards' },
   { to: '/awardees', label: 'Awardees' },
   { to: '/family-tour', label: 'Family Tour' },
+  { to: '/ibiea-1', label: 'IBIEA 1.0' },
   { to: '/contact', label: 'Contact' },
 ];

@@ -7,63 +7,75 @@ import {
 } from 'lucide-react';
 import {
   EVENT, HERO_CTAS, HIGHLIGHT_STATS, WHY_ATTEND, WHY_EXHIBIT, INDUSTRY_SEGMENTS,
-  AWARD_CATEGORIES, SPEAKERS, SPONSOR_CATEGORIES, SCHEDULE, PREVIOUS_STATS,
+  AWARD_CATEGORIES, SPEAKERS, SPONSOR_CATEGORIES, PREVIOUS_STATS,
   GALLERY, TESTIMONIALS, FAQS,
 } from '../data/siteData';
 import StatCounter from '../components/ui/StatCounter';
 import SectionHeading from '../components/ui/SectionHeading';
 import DynamicIcon from '../components/ui/DynamicIcon';
-import { useScrollReveal } from '../hooks/useScrollReveal';
-import { useCountdown } from '../hooks/useCountdown';
+import { Reveal } from '../components/ui/Motion';
+import { StatBarChart, DonutStat, HBarChart } from '../components/ui/Charts';
+import Countdown from '../components/ui/StateCard';
 
-/* Reusable scroll-reveal wrapper */
-function Reveal({ children, className = '', delay = 0 }) {
-  const ref = useScrollReveal();
-  return <div ref={ref} className={`animate-on-scroll ${className}`} style={{ animationDelay: `${delay}s` }}>{children}</div>;
-}
-
-/* ---------- 1. HERO ---------- */
+/* ---------- 1. HERO (premium Dubai real-estate) ---------- */
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background — Dubai skyline */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80')" }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-900/95 via-navy/90 to-navy-600/85" />
-        <div className="absolute inset-0 lux-dots opacity-30" />
+        <div className="absolute inset-0 bg-cover bg-center scale-105"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=2400&q=80')" }} />
+        {/* Keep image visible: light top, fade to navy at the bottom + soft side vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-navy-900/55 via-navy-900/35 to-navy-900" />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 35%, rgba(8,18,47,0.65) 100%)' }} />
+        <div className="absolute inset-0 hero-glow" />
+        <div className="absolute inset-0 lux-dots opacity-15" />
       </div>
 
-      <div className="container-x relative z-10 pt-28 pb-16">
-        <div className="max-w-3xl">
-          <p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/15 border border-gold/40 text-gold text-sm font-semibold mb-6 animate-fade-in-up">
-            <Star size={14} /> International Business & Infrastructure Expo & Awards
-          </p>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-black text-cream leading-[1.05] animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            IBIEA <span className="text-gradient-gold">2.0</span>
-          </h1>
-          <p className="mt-5 text-lg md:text-xl text-cream/80 max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            {EVENT.tagline}
-          </p>
+      <div className="container-x relative z-10 text-center pt-28 pb-24">
+        {/* Eyebrow badge */}
+        <p className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-gold/40 text-gold text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-sm animate-fade-in-up">
+          <Star size={14} /> International Business &amp; Infrastructure Expo &amp; Awards
+        </p>
 
-          <div className="flex flex-wrap gap-5 mt-8 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            {[
-              { icon: Calendar, text: EVENT.dates },
-              { icon: MapPin, text: EVENT.city },
-              { icon: Clock, text: EVENT.time },
-            ].map((m, i) => (
-              <div key={i} className="flex items-center gap-2.5 text-cream">
-                <span className="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center"><m.icon size={18} className="text-gold" /></span>
-                <span className="font-semibold text-sm">{m.text}</span>
-              </div>
-            ))}
-          </div>
+        {/* Brand */}
+        <h1 className="font-display font-black text-cream leading-none mt-7 animate-fade-in-up text-6xl sm:text-7xl lg:text-8xl xl:text-9xl" style={{ animationDelay: '0.08s' }}>
+          IBIEA <span className="gold-shine">2.0</span>
+        </h1>
 
-          <div className="flex flex-wrap gap-3 mt-10 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            {HERO_CTAS.map((c) => (
-              <Link key={c.label} to={c.to} className={c.primary ? 'btn-primary' : 'btn-secondary'}>
-                {c.label} {c.primary && <ArrowRight size={18} />}
-              </Link>
-            ))}
-          </div>
+        <div className="gold-divider mx-auto mt-6 animate-fade-in-up" style={{ animationDelay: '0.14s' }} />
+
+        {/* Purpose headline */}
+        <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-cream mt-6 max-w-4xl mx-auto leading-snug animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          Building the Future of <span className="text-gradient-gold">Real Estate</span> &amp; Infrastructure
+        </h2>
+
+        {/* Tagline */}
+        <p className="mt-5 text-base md:text-lg text-cream/75 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.26s' }}>
+          {EVENT.tagline}
+        </p>
+
+        {/* Meta pills */}
+        <div className="flex flex-wrap justify-center gap-3 mt-8 animate-fade-in-up" style={{ animationDelay: '0.32s' }}>
+          {[
+            { icon: Calendar, text: EVENT.dates },
+            { icon: MapPin, text: EVENT.city },
+            { icon: Clock, text: EVENT.time },
+          ].map((m, i) => (
+            <div key={i} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-gold/20 backdrop-blur-sm text-cream">
+              <m.icon size={16} className="text-gold" />
+              <span className="font-semibold text-sm">{m.text}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* CTAs */}
+        <div className="flex flex-wrap justify-center gap-3 mt-9 animate-fade-in-up" style={{ animationDelay: '0.38s' }}>
+          {HERO_CTAS.map((c) => (
+            <Link key={c.label} to={c.to} className={c.primary ? 'btn-primary' : 'btn-secondary !backdrop-blur-sm'}>
+              {c.label} {c.primary && <ArrowRight size={18} />}
+            </Link>
+          ))}
         </div>
       </div>
 
@@ -74,72 +86,30 @@ function Hero() {
   );
 }
 
-/* ---------- 2. COUNTDOWN ---------- */
-function Countdown() {
-  const t = useCountdown(EVENT.dateISO);
-  const units = [
-    { v: t.days, l: 'Days' }, { v: t.hours, l: 'Hours' },
-    { v: t.minutes, l: 'Minutes' }, { v: t.seconds, l: 'Seconds' },
-  ];
-  return (
-    <section className="section-pad bg-navy-900 border-y border-gold/15 relative overflow-hidden">
-      <div className="absolute inset-0 lux-pattern" />
-      <div className="container-x relative z-10 text-center">
-        <p className="eyebrow mb-3">The Countdown Has Begun</p>
-        <h2 className="font-display text-3xl md:text-4xl font-bold text-cream">IBIEA 2.0 Begins In</h2>
-        <div className="flex justify-center gap-3 sm:gap-5 mt-10">
-          {units.map((u) => (
-            <div key={u.l} className="w-20 sm:w-28 rounded-2xl bg-navy-700 border border-gold/30 py-5 shadow-card">
-              <div className="font-display text-3xl sm:text-5xl font-black text-gradient-gold tabular-nums">{String(u.v).padStart(2, '0')}</div>
-              <div className="text-xs sm:text-sm text-cream/60 uppercase tracking-wider mt-1">{u.l}</div>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 mt-10">
-          <Link to="/register" className="btn-primary">Reserve Your Spot <ArrowRight size={18} /></Link>
-          <button className="btn-secondary"><Download size={18} /> Download Event Brochure</button>
-        </div>
-      </div>
-    </section>
-  );
-}
+/* ---------- 2. COUNTDOWN — now imported from components/ui/StateCard.jsx ---------- */
 
-/* ---------- 3. EVENT HIGHLIGHTS ---------- */
+/* ---------- 3. EVENT HIGHLIGHTS (recharts + motion) ---------- */
 function Highlights() {
   return (
-    <section className="section-pad">
-      <div className="container-x">
-        <SectionHeading center eyebrow="Event Highlights" title="The Biggest Industry Gathering"
+    <section className="section-pad relative overflow-hidden bg-navy-900">
+      {/* Dubai skyline backdrop (faint) */}
+      <div className="absolute inset-0 bg-cover bg-center opacity-[0.12]"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1546412414-e1885259563a?auto=format&fit=crop&w=2000&q=80')" }} />
+      <div className="absolute inset-0 bg-gradient-to-b from-navy-900 via-navy-900/70 to-navy-900" />
+      <div className="absolute inset-0 lux-pattern" />
+
+      <div className="container-x relative z-10">
+        <SectionHeading center eyebrow="Event Highlights" title="IBIEA 2.0 By The Numbers"
           subtitle="A premium convergence of the entire real estate and infrastructure ecosystem." />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-5">
-          {HIGHLIGHT_STATS.map((s) => <StatCounter key={s.label} {...s} />)}
-        </div>
+
+        <Reveal>
+          <div className="rounded-3xl border border-gold/15 bg-navy-800/40 backdrop-blur-sm shadow-card p-5 sm:p-8">
+            <StatBarChart data={HIGHLIGHT_STATS} height={340} balanced />
+          </div>
+        </Reveal>
+
         <div className="text-center mt-12">
           <Link to="/register" className="btn-primary">Join the Biggest Real Estate Gathering <ArrowRight size={18} /></Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- 4. ABOUT ---------- */
-function About() {
-  return (
-    <section className="section-pad bg-navy-900/50">
-      <div className="container-x grid lg:grid-cols-2 gap-14 items-center">
-        <Reveal>
-          <div className="rounded-2xl overflow-hidden border border-gold/20 shadow-card h-80 lg:h-[26rem] bg-cover bg-center"
-            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80')" }} />
-        </Reveal>
-        <div>
-          <SectionHeading eyebrow="About IBIEA 2.0" title="Where the Industry Converges" />
-          <div className="space-y-4 text-cream/70 leading-relaxed">
-            <p><strong className="text-cream">IBIEA 2.0</strong> is the International Business & Infrastructure Expo & Awards — a flagship platform uniting real estate, infrastructure, interior design, home decor, construction materials and business networking under one roof.</p>
-            <p><strong className="text-gold">Our Vision:</strong> to be the region's most credible stage for industry excellence, investment and innovation.</p>
-            <p><strong className="text-gold">Our Mission:</strong> to connect developers, designers, suppliers, investors and leaders — driving deals, recognition and growth.</p>
-            <p>Whether you're an exhibitor, sponsor, delegate or award nominee, IBIEA 2.0 is built for those who shape the built environment.</p>
-          </div>
-          <Link to="/about" className="btn-secondary mt-7">Learn More About The Event <ArrowRight size={16} /></Link>
         </div>
       </div>
     </section>
@@ -174,25 +144,31 @@ function WhyCards({ eyebrow, title, items, ctas }) {
   );
 }
 
-/* ---------- 7. EXPO CATEGORIES ---------- */
+/* ---------- 7. EXPO CATEGORIES (photo cards) ---------- */
 function ExpoCategories() {
   return (
     <section className="section-pad bg-navy-900/50">
       <div className="container-x">
         <SectionHeading center eyebrow="Expo Categories" title="Who Exhibits at IBIEA 2.0"
           subtitle="Eleven industry segments across the entire built-environment value chain." />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {INDUSTRY_SEGMENTS.map((seg, i) => (
             <Reveal key={seg.id} delay={(i % 4) * 0.06}>
-              <Link to={`/exhibitors?segment=${seg.id}`} className={`card-base p-6 group block h-full relative overflow-hidden ${seg.featured ? 'border-gold/40' : ''}`}>
-                <span className="absolute top-0 inset-x-0 h-[3px] bg-gold-gradient scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-                {seg.featured && <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-gold text-navy">2026 Focus</span>}
-                <div className="icon-tile"><DynamicIcon name={seg.icon} size={26} /></div>
-                <h3 className="mt-4 font-display font-bold text-lg text-cream group-hover:text-gold transition-colors">{seg.name}</h3>
-                <p className="mt-2 text-sm text-cream/60 leading-relaxed">{seg.desc}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold opacity-0 group-hover:opacity-100 transition-opacity">
-                  Explore <ArrowRight size={14} />
-                </span>
+              <Link to={`/exhibitors?segment=${seg.id}`}
+                className="group block relative rounded-2xl overflow-hidden h-60 border border-gold/15 hover:border-gold/50 transition-all duration-300 shadow-card">
+                <img src={seg.img} alt={seg.name} loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/55 to-navy-900/10" />
+                {seg.featured && (
+                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-gold text-navy">2026 Focus</span>
+                )}
+                <div className="absolute bottom-0 inset-x-0 p-5">
+                  <div className="w-10 h-10 rounded-lg bg-gold/20 backdrop-blur border border-gold/40 flex items-center justify-center text-gold mb-2.5">
+                    <DynamicIcon name={seg.icon} size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-cream group-hover:text-gold transition-colors">{seg.name}</h3>
+                  <p className="text-xs text-cream/70 mt-1 leading-relaxed line-clamp-2">{seg.desc}</p>
+                </div>
               </Link>
             </Reveal>
           ))}
@@ -205,9 +181,18 @@ function ExpoCategories() {
   );
 }
 
-/* ---------- 8. AWARD CATEGORIES ---------- */
+/* ---------- 8. AWARD CATEGORIES (photo cards) ---------- */
+const AWARD_IMAGES = [
+  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=900&q=80',
+];
+
 function Awards() {
-  const featured = AWARD_CATEGORIES.slice(0, 6);
+  const featured = AWARD_CATEGORIES.slice(0, 6).map((c, i) => ({ ...c, img: AWARD_IMAGES[i] }));
   return (
     <section className="section-pad relative overflow-hidden">
       <div className="absolute inset-0 lux-pattern" />
@@ -217,11 +202,17 @@ function Awards() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featured.map((cat, i) => (
             <Reveal key={cat.id} delay={(i % 3) * 0.06}>
-              <div className="card-base p-7 h-full group relative overflow-hidden">
-                <span className="absolute top-0 inset-x-0 h-[3px] bg-gold-gradient scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-                <div className="icon-tile !rounded-full"><Award size={24} /></div>
-                <h3 className="mt-4 font-display font-bold text-lg text-gold">{cat.name}</h3>
-                <p className="mt-2 text-sm text-cream/70 leading-relaxed">{cat.desc}</p>
+              <div className="group relative rounded-2xl overflow-hidden h-64 border border-gold/15 hover:border-gold/50 transition-all duration-300 shadow-card">
+                <img src={cat.img} alt={cat.name} loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/70 to-navy-900/20" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                  <div className="w-11 h-11 rounded-full bg-gold flex items-center justify-center text-navy mb-3 shadow-gold">
+                    <Award size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-gold">{cat.name}</h3>
+                  <p className="mt-1.5 text-sm text-cream/80 leading-relaxed">{cat.desc}</p>
+                </div>
               </div>
             </Reveal>
           ))}
@@ -263,133 +254,119 @@ function Speakers() {
   );
 }
 
-/* ---------- 10. SPONSORS & PARTNERS ---------- */
+/* ---------- 10. SPONSORS & PARTNERS (pitch + photo + CTAs) ---------- */
+const SPONSOR_BENEFITS = [
+  { icon: 'Users', title: 'Premium Audience', desc: 'Reach 300+ delegates, 150+ exhibitors, investors & decision-makers.' },
+  { icon: 'Star', title: 'Stage & Branding', desc: 'Headline visibility across the stage, signage and digital channels.' },
+  { icon: 'Trophy', title: 'Award Association', desc: 'Co-brand award categories and share the spotlight with winners.' },
+  { icon: 'Megaphone', title: 'Year-Round Reach', desc: 'Logo placement, social features and pre/post-event campaigns.' },
+];
+
 function Sponsors() {
   const [sponsors, setSponsors] = useState([]);
   useEffect(() => { api.publicSponsors().then((r) => setSponsors(r || [])).catch(() => {}); }, []);
 
-  // Group live sponsors by tier name; only render tiers that have at least one.
-  const byTier = sponsors.reduce((acc, s) => {
-    const t = s.tier_name || 'Partner';
-    (acc[t] = acc[t] || []).push(s);
-    return acc;
-  }, {});
-  const tierOrder = ['Title Sponsor', 'Platinum', 'Gold', 'Silver', 'Partner'];
-  const tiers = Object.keys(byTier).sort((a, b) => tierOrder.indexOf(a) - tierOrder.indexOf(b));
-
   return (
-    <section className="section-pad">
-      <div className="container-x">
-        <SectionHeading center eyebrow="Sponsors & Partners" title="Backed by Leading Brands" />
-        {tiers.length === 0 ? (
-          <div className="space-y-8">
-            {['Title Sponsor', 'Powered By', 'Gold Sponsor'].map((cat, idx) => (
-              <div key={cat}>
-                <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-gold mb-4">{cat}</p>
-                <div className="flex flex-wrap justify-center gap-5">
-                  {Array.from({ length: idx + 1 }).map((_, i) => (
-                    <div key={i} className="h-16 min-w-[150px] px-8 rounded-xl bg-navy-700 border border-gold/20 flex items-center justify-center text-cream/40 font-display font-bold">Your Brand</div>
-                  ))}
-                </div>
+    <section className="section-pad relative overflow-hidden">
+      <div className="absolute inset-0 lux-pattern" />
+      <div className="container-x relative z-10">
+        <SectionHeading center eyebrow="Sponsors & Partners" title="Partner with Prestige"
+          subtitle="Align your brand with the region's premier real estate business, infrastructure & awards platform." />
+
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Photo */}
+          <Reveal>
+            <div className="relative rounded-2xl overflow-hidden border border-gold/20 shadow-card h-80 lg:h-[26rem]">
+              <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1200&q=80"
+                alt="IBIEA sponsorship" className="w-full h-full object-cover" loading="lazy" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/30 to-transparent" />
+              <div className="absolute bottom-0 inset-x-0 p-6">
+                <p className="font-display text-2xl font-bold text-gold">Be Seen Where It Matters</p>
+                <p className="text-sm text-cream/80 mt-1">Your brand, centre-stage at IBIEA 2.0.</p>
               </div>
-            ))}
+            </div>
+          </Reveal>
+
+          {/* Content + CTAs */}
+          <div>
+            <p className="text-cream/75 leading-relaxed">
+              Sponsoring IBIEA 2.0 places your brand at the heart of an international gathering of developers,
+              investors, designers and industry leaders. From title sponsorship to media partnerships, every tier is
+              built to maximise visibility, credibility and business connections.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4 mt-6">
+              {SPONSOR_BENEFITS.map((b) => (
+                <div key={b.title} className="flex gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-gold/15 border border-gold/30 flex items-center justify-center text-gold shrink-0">
+                    <DynamicIcon name={b.icon} size={18} />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-cream text-sm">{b.title}</p>
+                    <p className="text-xs text-cream/60 leading-relaxed">{b.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Tier chips */}
+            <div className="flex flex-wrap gap-2 mt-7">
+              {SPONSOR_CATEGORIES.map((c) => (
+                <span key={c} className="px-3 py-1.5 rounded-full bg-navy-700 border border-gold/25 text-xs font-semibold text-cream/80">{c}</span>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-4 mt-8">
+              <Link to="/sponsors" className="btn-primary">Become a Sponsor <ArrowRight size={18} /></Link>
+              <button className="btn-secondary"><Download size={18} /> Download Sponsorship Deck</button>
+              <Link to="/contact" className="btn-ghost">Talk to Our Team</Link>
+            </div>
           </div>
-        ) : (
-          <div className="space-y-8">
-            {tiers.map((tier) => (
-              <div key={tier}>
-                <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-gold mb-4">{tier}</p>
-                <div className="flex flex-wrap justify-center gap-5">
-                  {byTier[tier].map((s) => (
-                    <div key={s.id} className="h-16 min-w-[150px] px-8 rounded-xl bg-navy-700 border border-gold/20 flex items-center justify-center text-cream font-display font-bold hover:border-gold/50 transition-colors">
-                      {s.company}
-                    </div>
-                  ))}
+        </div>
+
+        {/* Live partner logos (shown only when sponsors exist) */}
+        {sponsors.length > 0 && (
+          <div className="mt-16">
+            <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-gold mb-5">Our Partners</p>
+            <div className="flex flex-wrap justify-center gap-5">
+              {sponsors.map((s) => (
+                <div key={s.id} className="h-16 min-w-[150px] px-8 rounded-xl bg-navy-700 border border-gold/20 flex items-center justify-center text-cream font-display font-bold hover:border-gold/50 transition-colors">
+                  {s.company}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
-        <div className="flex flex-wrap justify-center gap-4 mt-12">
-          <Link to="/sponsors" className="btn-primary">Become a Sponsor <ArrowRight size={18} /></Link>
-          <button className="btn-secondary"><Download size={18} /> Download Sponsorship Deck</button>
-        </div>
       </div>
     </section>
   );
 }
 
-/* ---------- 11. EXHIBITORS SHOWCASE ---------- */
-function ExhibitorsShowcase() {
-  return (
-    <section className="section-pad bg-navy-900/50 overflow-hidden">
-      <div className="container-x">
-        <SectionHeading center eyebrow="Exhibitors Showcase" title="Featured Exhibitors" />
-      </div>
-      <div className="relative">
-        <div className="flex gap-5 animate-[shimmer_none] overflow-x-auto px-5 sm:px-8 lg:px-12 pb-4 [scrollbar-width:none]">
-          {INDUSTRY_SEGMENTS.map((seg) => (
-            <div key={seg.id} className="shrink-0 w-56 card-base p-6 text-center">
-              <div className="w-14 h-14 rounded-xl bg-gold/15 flex items-center justify-center text-gold mx-auto"><DynamicIcon name={seg.icon} size={26} /></div>
-              <p className="mt-3 font-bold text-cream text-sm">Exhibitor</p>
-              <p className="text-xs text-gold">{seg.name}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="container-x flex flex-wrap justify-center gap-4 mt-10">
-        <Link to="/exhibitors" className="btn-secondary">View All Exhibitors</Link>
-        <Link to="/exhibitors" className="btn-primary">Exhibit With Us <ArrowRight size={18} /></Link>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- 12. AGENDA ---------- */
-function Agenda() {
-  return (
-    <section className="section-pad">
-      <div className="container-x">
-        <SectionHeading center eyebrow="Event Agenda" title="Three Days, One Stage"
-          subtitle="Exhibition, networking and recognition across the full programme." />
-        <div className="grid md:grid-cols-3 gap-6">
-          {SCHEDULE.map((day) => (
-            <Reveal key={day.day}>
-              <div className="card-base p-6 h-full">
-                <div className="flex items-baseline justify-between border-b border-gold/20 pb-4 mb-4">
-                  <h3 className="font-display font-bold text-2xl text-gold">{day.day}</h3>
-                  <span className="text-xs font-semibold uppercase tracking-wide text-cream/50">{day.title}</span>
-                </div>
-                <ul className="space-y-3">
-                  {day.items.map((it, i) => (
-                    <li key={i} className="flex gap-3 text-sm">
-                      <span className="font-bold text-gold w-12 shrink-0">{it.time}</span>
-                      <span className="text-cream/70">{it.label}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 mt-12">
-          <button className="btn-primary"><Download size={18} /> Download Agenda</button>
-          <button className="btn-secondary"><Calendar size={18} /> Add Event To Calendar</button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- 13. PREVIOUS EDITION ---------- */
+/* ---------- 13. PREVIOUS EDITION (counters + donut) ---------- */
 function PreviousEdition() {
+  const counts = PREVIOUS_STATS.filter((s) => s.suffix !== '%');
+  const satisfaction = PREVIOUS_STATS.find((s) => s.suffix === '%');
   return (
     <section className="section-pad bg-navy-900 border-y border-gold/15 relative overflow-hidden">
       <div className="absolute inset-0 lux-dots opacity-20" />
       <div className="container-x relative z-10">
-        <SectionHeading center eyebrow="Previous Edition" title="A Proven Success" />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-5">
-          {PREVIOUS_STATS.map((s) => <StatCounter key={s.label} {...s} />)}
+        <SectionHeading center eyebrow="Previous Edition" title="A Proven Success"
+          subtitle="The numbers behind a record-breaking debut edition." />
+        <div className="grid lg:grid-cols-3 gap-8 items-center">
+          <Reveal className="lg:col-span-2">
+            <div className="grid grid-cols-2 gap-5">
+              {counts.map((s) => (
+                <div key={s.label} className="card-base p-6 text-center">
+                  <StatCounter {...s} />
+                </div>
+              ))}
+            </div>
+          </Reveal>
+          <Reveal delay={0.15}>
+            <div className="card-base p-8 flex flex-col items-center text-center">
+              <DonutStat value={satisfaction?.value ?? 90} label="Satisfaction" size={190} />
+              <p className="mt-4 text-cream/70 text-sm">Attendee satisfaction across the previous edition.</p>
+            </div>
+          </Reveal>
         </div>
         <div className="text-center mt-12"><Link to="/about" className="btn-secondary">See Previous Event Highlights <ArrowRight size={16} /></Link></div>
       </div>
@@ -606,7 +583,6 @@ export default function Home() {
       <Hero />
       <Countdown />
       <Highlights />
-      <About />
       <WhyCards eyebrow="Why Attend" title="Reasons to Be There" items={WHY_ATTEND}
         ctas={[{ label: 'Register as Visitor', to: '/register', primary: true }, { label: 'View Event Agenda', to: '/about' }]} />
       <WhyCards eyebrow="Why Exhibit" title="Grow Your Business" items={WHY_EXHIBIT}
@@ -615,8 +591,6 @@ export default function Home() {
       <Awards />
       <Speakers />
       <Sponsors />
-      <ExhibitorsShowcase />
-      <Agenda />
       <PreviousEdition />
       <Gallery />
       <Testimonials />

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, MessageCircle, Loader2 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
+import { Reveal } from '../components/ui/Motion';
 import { EVENT } from '../data/siteData';
 import { api } from '../lib/api';
 
@@ -42,19 +43,22 @@ export default function Contact() {
                 { icon: Mail, label: 'Email', value: EVENT.contactEmail, href: `mailto:${EVENT.contactEmail}` },
                 { icon: Phone, label: 'Phone', value: EVENT.contactPhone, href: `tel:${EVENT.contactPhone}` },
                 { icon: MessageCircle, label: 'WhatsApp', value: 'Chat with our team', href: '#' },
-              ].map((c) => (
-                <a key={c.label} href={c.href || '#'} className="card-base p-5 flex items-center gap-4 hover:border-gold">
-                  <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center text-gold shrink-0"><c.icon size={22} /></div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-cream/70 font-semibold">{c.label}</p>
-                    <p className="font-bold text-cream">{c.value}</p>
-                  </div>
-                </a>
+              ].map((c, i) => (
+                <Reveal key={c.label} delay={i * 0.07}>
+                  <a href={c.href || '#'} className="card-base p-5 flex items-center gap-4 group">
+                    <div className="icon-tile shrink-0 !w-12 !h-12"><c.icon size={22} /></div>
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-cream/70 font-semibold">{c.label}</p>
+                      <p className="font-bold text-cream">{c.value}</p>
+                    </div>
+                  </a>
+                </Reveal>
               ))}
             </div>
           </div>
 
           {/* Form */}
+          <Reveal delay={0.1}>
           <div className="card-base p-7 md:p-9">
             {sent ? (
               <div className="text-center py-12">
@@ -88,6 +92,7 @@ export default function Contact() {
               </form>
             )}
           </div>
+          </Reveal>
         </div>
       </section>
     </>

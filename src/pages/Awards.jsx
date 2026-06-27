@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Award, Clock, FileCheck, Gavel, Trophy, ArrowRight, Send, CheckCircle2, Loader2 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import SectionHeading from '../components/ui/SectionHeading';
+import { Reveal } from '../components/ui/Motion';
 import { AWARD_CATEGORIES } from '../data/siteData';
 import { api } from '../lib/api';
 
@@ -36,14 +37,14 @@ export default function Awards() {
           <SectionHeading center eyebrow="How It Works" title="The Awards Journey" />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {PROCESS.map((p, i) => (
-              <div key={p.title} className="card-base p-6 text-center relative">
-                <span className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gold-gradient text-navy text-sm font-bold flex items-center justify-center">{i + 1}</span>
-                <div className="w-14 h-14 rounded-2xl bg-gold/15 flex items-center justify-center mx-auto text-gold">
-                  <p.icon size={26} />
+              <Reveal key={p.title} delay={i * 0.08}>
+                <div className="card-base p-6 text-center relative h-full group">
+                  <span className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gold-gradient text-navy text-sm font-bold flex items-center justify-center">{i + 1}</span>
+                  <div className="icon-tile mx-auto !rounded-2xl"><p.icon size={26} /></div>
+                  <h3 className="mt-4 font-display font-bold text-lg text-cream">{p.title}</h3>
+                  <p className="mt-2 text-sm text-cream/70">{p.desc}</p>
                 </div>
-                <h3 className="mt-4 font-bold text-cream">{p.title}</h3>
-                <p className="mt-2 text-sm text-cream/70">{p.desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -61,15 +62,22 @@ export default function Awards() {
                   <span className="gold-divider" /> {group}
                 </h3>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {cats.map((cat) => (
-                    <div key={cat.id} className={`card-base p-6 group ${cat.themed ? 'border-l-4 border-gold' : ''}`}>
-                      <Award size={28} className="text-gold" />
-                      <h4 className="mt-3 font-bold text-cream group-hover:text-gold transition-colors">{cat.name}</h4>
-                      <p className="mt-2 text-sm text-cream/70 leading-relaxed">{cat.desc}</p>
-                      <button onClick={() => setSelectedCat(cat)} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold hover:gap-2 transition-all">
-                        Nominate <ArrowRight size={14} />
+                  {cats.map((cat, i) => (
+                    <Reveal key={cat.id} delay={(i % 3) * 0.07}>
+                      <button onClick={() => setSelectedCat(cat)}
+                        className="group relative w-full text-left rounded-2xl overflow-hidden h-60 border border-gold/15 hover:border-gold/50 transition-all duration-300 shadow-card">
+                        <img src={cat.img} alt={cat.name} loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/70 to-navy-900/15" />
+                        {cat.themed && <span className="absolute top-3 right-3 text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-gold text-navy">2026</span>}
+                        <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                          <div className="w-11 h-11 rounded-full bg-gold flex items-center justify-center text-navy mb-3 shadow-gold"><Award size={20} /></div>
+                          <h4 className="font-display font-bold text-lg text-gold">{cat.name}</h4>
+                          <p className="mt-1.5 text-sm text-cream/80 leading-relaxed line-clamp-2">{cat.desc}</p>
+                          <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-gold group-hover:gap-2 transition-all">Nominate <ArrowRight size={14} /></span>
+                        </div>
                       </button>
-                    </div>
+                    </Reveal>
                   ))}
                 </div>
               </div>
@@ -125,8 +133,9 @@ function NominationModal({ category, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
-      <div className="bg-transparent rounded-2xl shadow-card-hover w-full max-w-2xl my-8 p-7 md:p-9" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/90 backdrop-blur-md overflow-y-auto" onClick={onClose}>
+      <div className="bg-navy-800 border border-gold/25 rounded-2xl shadow-card-hover w-full max-w-2xl my-8 p-7 md:p-9 relative" onClick={(e) => e.stopPropagation()}>
+        <span className="absolute top-0 inset-x-0 h-[3px] bg-gold-gradient rounded-t-2xl" />
         {submitted ? (
           <div className="text-center py-8">
             <CheckCircle2 size={56} className="mx-auto text-gold" />

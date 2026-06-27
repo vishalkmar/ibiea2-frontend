@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Check, X, Crown, ArrowRight } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import SectionHeading from '../components/ui/SectionHeading';
 import EnquiryForm from '../components/ui/EnquiryForm';
+import { Reveal } from '../components/ui/Motion';
 import { SPONSOR_TIERS, BENEFITS_MATRIX } from '../data/siteData';
+import { api } from '../lib/api';
 
 export default function Sponsors() {
   const [showEnquiry, setShowEnquiry] = useState(false);
+  const [tiers, setTiers] = useState(SPONSOR_TIERS);
+  useEffect(() => {
+    api.sponsorTiers()
+      .then((rows) => {
+        if (rows && rows.length) {
+          setTiers(rows.map((t) => ({ ...t, highlight: t.sort_order === 1, accent: '#D4AF37' })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <>
@@ -23,20 +35,22 @@ export default function Sponsors() {
           <SectionHeading center eyebrow="Sponsorship Tiers" title="Choose Your Level of Association"
             subtitle="Investment amounts are shared privately by our sponsorship team — request a proposal to begin the conversation." />
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-            {SPONSOR_TIERS.map((tier) => (
-              <div key={tier.id} className={`card-base p-7 flex flex-col relative ${tier.highlight ? 'ring-2 ring-gold shadow-gold-lg' : ''}`}>
-                {tier.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gold text-navy text-xs font-bold uppercase tracking-wide flex items-center gap-1">
-                    <Crown size={12} /> Flagship
-                  </span>
-                )}
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${tier.accent}25` }}>
-                  <Crown size={24} style={{ color: tier.accent }} />
+            {tiers.map((tier, i) => (
+              <Reveal key={tier.id} delay={i * 0.08} className="h-full">
+                <div className={`card-base p-7 flex flex-col relative h-full ${tier.highlight ? 'ring-2 ring-gold shadow-gold-lg' : ''}`}>
+                  {tier.highlight && (
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gold text-navy text-xs font-bold uppercase tracking-wide flex items-center gap-1">
+                      <Crown size={12} /> Flagship
+                    </span>
+                  )}
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${tier.accent}25` }}>
+                    <Crown size={24} style={{ color: tier.accent }} />
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-cream">{tier.name}</h3>
+                  <p className="mt-3 text-sm text-cream/70 flex-1">{tier.scope}</p>
+                  <button onClick={() => setShowEnquiry(true)} className={`mt-6 ${tier.highlight ? 'btn-primary' : 'btn-secondary'} w-full`}>Request a Proposal</button>
                 </div>
-                <h3 className="text-xl font-bold text-cream">{tier.name}</h3>
-                <p className="mt-3 text-sm text-cream/70 flex-1">{tier.scope}</p>
-                <button onClick={() => setShowEnquiry(true)} className={`mt-6 ${tier.highlight ? 'btn-primary' : 'btn-secondary'} w-full`}>Request a Proposal</button>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -102,7 +116,7 @@ export default function Sponsors() {
       </section>
 
       {showEnquiry && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-sm overflow-y-auto" onClick={() => setShowEnquiry(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/90 backdrop-blur-md overflow-y-auto" onClick={() => setShowEnquiry(false)}>
           <div className="w-full max-w-2xl my-8" onClick={(e) => e.stopPropagation()}>
             <EnquiryForm
               kind="sponsor"

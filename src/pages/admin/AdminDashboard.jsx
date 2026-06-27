@@ -8,6 +8,7 @@ import SponsorMgmt from './SponsorMgmt';
 import AwardsMgmt from './AwardsMgmt';
 import AwardeesMgmt from './AwardeesMgmt';
 import FloorPlanMgmt from './FloorPlanMgmt';
+import PlansMgmt from './PlansMgmt';
 import FinanceReports from './FinanceReports';
 import CMS from './CMS';
 import UserRoles from './UserRoles';
@@ -21,6 +22,7 @@ const ALL_NAV = [
   { to: '/admin/registrations', label: 'Registrations', icon: 'Users', roles: ['super', 'ops', 'finance'] },
   { to: '/admin/exhibitors', label: 'Exhibitors', icon: 'Building2', roles: ['super', 'ops', 'finance'] },
   { to: '/admin/floor-plan', label: 'Floor Plan', icon: 'Grid3x3', roles: ['super', 'ops'] },
+  { to: '/admin/plans', label: 'Plans & Tiers', icon: 'ListChecks', roles: ['super', 'ops'] },
   { to: '/admin/sponsors', label: 'Sponsors', icon: 'Megaphone', roles: ['super', 'ops', 'finance'] },
   { to: '/admin/awards', label: 'Awards', icon: 'Trophy', roles: ['super', 'ops'] },
   { to: '/admin/awardees', label: 'Awardees', icon: 'Award', roles: ['super', 'ops'] },
@@ -48,6 +50,7 @@ export default function AdminDashboard() {
         <Route path="registrations" element={<Registrations role={role} />} />
         <Route path="exhibitors" element={<ExhibitorMgmt role={role} />} />
         <Route path="floor-plan" element={<RoleGuard role={role} allow={['super', 'ops']}><FloorPlanMgmt /></RoleGuard>} />
+        <Route path="plans" element={<RoleGuard role={role} allow={['super', 'ops']}><PlansMgmt /></RoleGuard>} />
         <Route path="sponsors" element={<SponsorMgmt role={role} />} />
         <Route path="awards" element={<RoleGuard role={role} allow={['super', 'ops']}><AwardsMgmt /></RoleGuard>} />
         <Route path="awardees" element={<RoleGuard role={role} allow={['super', 'ops']}><AwardeesMgmt /></RoleGuard>} />

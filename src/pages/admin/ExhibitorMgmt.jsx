@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { MapPin, Trash2, Plus, Pencil, Ticket } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MapPin, Trash2, Plus, Pencil, Ticket, FileUp, Loader2, FileText } from 'lucide-react';
 import DataTable from '../../components/dashboard/DataTable';
 import { StatusBadge } from '../../components/dashboard/widgets';
 import AsyncState from '../../components/dashboard/AsyncState';
@@ -51,6 +51,21 @@ export default function ExhibitorMgmt({ role }) {
     await api.adminDeleteExhibitor(id); reload(); reloadStalls();
   };
 
+  // Tax invoice upload
+  const invoiceInput = useRef(null);
+  const [invoiceFor, setInvoiceFor] = useState(null);
+  const [invoiceBusy, setInvoiceBusy] = useState(null);
+  const pickInvoice = (row) => { setInvoiceFor(row.id); invoiceInput.current?.click(); };
+  const onInvoiceFile = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !invoiceFor) return;
+    setInvoiceBusy(invoiceFor);
+    try { await api.adminUploadInvoice(invoiceFor, file); reload(); }
+    catch (er) { alert(er.message); }
+    finally { setInvoiceBusy(null); setInvoiceFor(null); }
+  };
+
   // When editing, also allow keeping the currently-assigned stall in the dropdown
   const stallOptions = editing?.stall_id
     ? [{ id: editing.stall_id, tier: 'current', dimensions: 'assigned' }, ...availableStalls.filter((s) => s.id !== editing.stall_id)]
@@ -67,6 +82,14 @@ export default function ExhibitorMgmt({ role }) {
       </button>
     )},
     { key: 'status', label: 'Status', render: (r) => <StatusBadge status={r.status} /> },
+    { key: 'invoice', label: 'Invoice', render: (r) => (
+      <button onClick={() => pickInvoice(r)} disabled={invoiceBusy === r.id}
+        className={`flex items-center gap-1.5 ${r.invoice_url ? 'text-green-400' : 'text-cream/60'} hover:text-gold`}
+        title={r.invoice_url ? 'Invoice uploaded — replace' : 'Upload tax invoice'}>
+        {invoiceBusy === r.id ? <Loader2 size={14} className="animate-spin" /> : r.invoice_url ? <FileText size={14} /> : <FileUp size={14} />}
+        {r.invoice_url ? 'Uploaded' : 'Upload'}
+      </button>
+    )},
     { key: 'actions', label: 'Actions', render: (r) => (
       !financeOnly ? (
         <div className="flex gap-2">
@@ -79,7 +102,8 @@ export default function ExhibitorMgmt({ role }) {
 
   return (
     <div className="space-y-4">
-      {financeOnly && <p className="text-sm text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-lg">Finance Admin can verify payments only.</p>}
+      <input ref={invoiceInput} type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden" onChange={onInvoiceFile} />
+      {financeOnly && <p className="text-sm text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-lg">Finance Admin can verify payments &amp; upload invoices.</p>}
       <AsyncState loading={loading} error={error}>
         <DataTable
           title={`Exhibitors (${rows.length})`}

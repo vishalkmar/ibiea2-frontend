@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Ticket, Crown, Check, QrCode, Mail, MessageCircle, ArrowRight, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
+import { Ticket, Crown, Check, QrCode, Mail, ArrowRight, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
+import { Reveal } from '../components/ui/Motion';
 import { INDUSTRY_SEGMENTS } from '../data/siteData';
 import { api } from '../lib/api';
 
@@ -73,17 +74,19 @@ export default function Register() {
               {step === 1 && (
                 <div>
                   <div className="grid md:grid-cols-2 gap-6">
-                    {TYPES.map((t) => (
-                      <button key={t.id} onClick={() => setType(t.id)}
-                        className={`card-base p-7 text-left relative ${type === t.id ? 'ring-2 ring-gold shadow-gold-lg' : ''}`}>
-                        {t.premium && <span className="absolute top-4 right-4 text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-gold text-navy">Premium</span>}
-                        <div className="w-14 h-14 rounded-2xl bg-gold/15 flex items-center justify-center text-gold"><t.icon size={26} /></div>
-                        <h3 className="mt-4 text-xl font-bold text-cream">{t.name}</h3>
-                        <p className="text-sm text-cream/70">{t.tagline}</p>
-                        <ul className="mt-4 space-y-2">
-                          {t.perks.map((p) => <li key={p} className="flex gap-2 text-sm text-cream/70"><Check size={16} className="text-gold shrink-0" /> {p}</li>)}
-                        </ul>
-                      </button>
+                    {TYPES.map((t, i) => (
+                      <Reveal key={t.id} delay={i * 0.1}>
+                        <button onClick={() => setType(t.id)}
+                          className={`card-base p-7 text-left relative w-full h-full group ${type === t.id ? 'ring-2 ring-gold shadow-gold-lg' : ''}`}>
+                          {t.premium && <span className="absolute top-4 right-4 text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-gold text-navy">Premium</span>}
+                          <div className="icon-tile !w-14 !h-14 !rounded-2xl"><t.icon size={26} /></div>
+                          <h3 className="mt-4 font-display text-xl font-bold text-cream">{t.name}</h3>
+                          <p className="text-sm text-cream/70">{t.tagline}</p>
+                          <ul className="mt-4 space-y-2">
+                            {t.perks.map((p) => <li key={p} className="flex gap-2 text-sm text-cream/70"><Check size={16} className="text-gold shrink-0" /> {p}</li>)}
+                          </ul>
+                        </button>
+                      </Reveal>
                     ))}
                   </div>
 
@@ -151,7 +154,7 @@ export default function Register() {
                   <div className="space-y-4">
                     <Row label="Ticket Type" value={selectedType.name} />
                     <Row label="Family Tour Add-On" value={familyTour ? 'Yes — enquiry will be raised' : 'No'} />
-                    <Row label="Confirmation" value="Email + WhatsApp" />
+                    <Row label="Confirmation" value="Email" />
                   </div>
                   <div className="mt-6 p-4 rounded-xl bg-navy-700/50 text-sm text-cream/70 flex gap-3">
                     <QrCode size={20} className="text-gold shrink-0" />
@@ -206,8 +209,7 @@ function Success({ type, familyTour, result }) {
           </div>
         </div>
         <div className="mt-5 pt-5 border-t border-gold/30 flex gap-4 text-sm text-cream/70">
-          <span className="flex items-center gap-1.5"><Mail size={15} className="text-gold" /> Emailed</span>
-          <span className="flex items-center gap-1.5"><MessageCircle size={15} className="text-gold" /> WhatsApp sent</span>
+          <span className="flex items-center gap-1.5"><Mail size={15} className="text-gold" /> Ticket emailed to you</span>
         </div>
       </div>
 

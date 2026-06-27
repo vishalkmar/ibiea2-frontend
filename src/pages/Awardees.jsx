@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Trophy, Medal, Filter, Loader2 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import SectionHeading from '../components/ui/SectionHeading';
+import { Reveal } from '../components/ui/Motion';
 import { AWARD_CATEGORIES } from '../data/siteData';
 import { api } from '../lib/api';
 
@@ -45,16 +46,19 @@ export default function Awardees() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((w, i) => (
-                <div key={i} className="card-base p-7 text-center group">
-                  <div className="w-20 h-20 rounded-full bg-gold-gradient mx-auto flex items-center justify-center shadow-gold">
-                    <Trophy size={34} className="text-navy" />
+                <Reveal key={i} delay={(i % 3) * 0.07}>
+                  <div className="card-base p-7 text-center group relative overflow-hidden h-full">
+                    <span className="absolute top-0 inset-x-0 h-[3px] bg-gold-gradient scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                    <div className="w-20 h-20 rounded-full bg-gold-gradient mx-auto flex items-center justify-center shadow-gold group-hover:scale-105 transition-transform">
+                      <Trophy size={34} className="text-navy" />
+                    </div>
+                    <span className="inline-block mt-4 px-3 py-1 rounded-full bg-gold/15 text-gold text-xs font-bold uppercase tracking-wide">{w.category}</span>
+                    <h3 className="mt-3 font-display font-bold text-xl text-cream">{w.name}</h3>
+                    {w.company && <p className="text-cream/70 text-sm">{w.company}</p>}
+                    {w.citation && <p className="mt-3 text-sm text-cream/60 italic">"{w.citation}"</p>}
+                    <p className="mt-3 text-xs text-gold font-semibold">Edition {w.edition}</p>
                   </div>
-                  <span className="inline-block mt-4 px-3 py-1 rounded-full bg-gold/15 text-gold text-xs font-bold uppercase tracking-wide">{w.category}</span>
-                  <h3 className="mt-3 font-display font-bold text-xl text-cream">{w.name}</h3>
-                  {w.company && <p className="text-cream/70 text-sm">{w.company}</p>}
-                  {w.citation && <p className="mt-3 text-sm text-cream/60 italic">"{w.citation}"</p>}
-                  <p className="mt-3 text-xs text-gold font-semibold">Edition {w.edition}</p>
-                </div>
+                </Reveal>
               ))}
             </div>
           )}

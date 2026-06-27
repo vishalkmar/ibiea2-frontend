@@ -6,6 +6,7 @@ import SectionHeading from '../components/ui/SectionHeading';
 import DynamicIcon from '../components/ui/DynamicIcon';
 import FloorPlan from '../components/exhibitor/FloorPlan';
 import EnquiryForm from '../components/ui/EnquiryForm';
+import { Reveal } from '../components/ui/Motion';
 import { EXHIBITOR_PACKAGES, INDUSTRY_SEGMENTS } from '../data/siteData';
 import { api } from '../lib/api';
 
@@ -34,7 +35,7 @@ export default function Exhibitors() {
       />
 
       {/* Tabs */}
-      <div className="sticky top-[68px] z-30 bg-transparent/95 backdrop-blur border-b border-gold/20">
+      <div className="sticky top-[68px] z-30 bg-navy-900/95 backdrop-blur border-b border-gold/20">
         <div className="container-x flex gap-2 overflow-x-auto py-3">
           {TABS.map((t) => (
             <button key={t} onClick={() => setTab(t)}
@@ -62,7 +63,7 @@ export default function Exhibitors() {
 
       {/* Enquiry modal */}
       {showEnquiry && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-sm overflow-y-auto" onClick={() => setShowEnquiry(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/90 backdrop-blur-md overflow-y-auto" onClick={() => setShowEnquiry(false)}>
           <div className="w-full max-w-2xl my-8" onClick={(e) => e.stopPropagation()}>
             <EnquiryForm
               kind="exhibitor"
@@ -82,31 +83,44 @@ export default function Exhibitors() {
   );
 }
 
+function parseFeatures(f) {
+  if (Array.isArray(f)) return f;
+  try { const a = JSON.parse(f); return Array.isArray(a) ? a : []; } catch { return []; }
+}
+
 function Packages({ onEnquire }) {
+  const [packages, setPackages] = useState(EXHIBITOR_PACKAGES);
+  useEffect(() => {
+    api.packages()
+      .then((rows) => { if (rows && rows.length) setPackages(rows.map((p) => ({ ...p, features: parseFeatures(p.features) }))); })
+      .catch(() => {});
+  }, []);
   return (
     <>
       <SectionHeading center eyebrow="Exhibitor Packages" title="Choose Your Participation Tier"
         subtitle="Flexible footprints across every tier. Pricing is shared privately on enquiry — no public pricing." />
       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-        {EXHIBITOR_PACKAGES.map((pkg) => (
-          <div key={pkg.id} className={`card-base p-7 relative flex flex-col ${pkg.popular ? 'ring-2 ring-gold shadow-gold-lg' : ''} ${pkg.themed ? 'border-t-4 border-gold-deep' : ''}`}>
-            {pkg.popular && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gold text-navy text-xs font-bold uppercase tracking-wide flex items-center gap-1">
-                <Star size={12} /> Most Popular
-              </span>
-            )}
-            {pkg.themed && (
-              <span className="absolute top-3 right-3 text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-gold-deep text-cream">2026 Theme</span>
-            )}
-            <h3 className="text-xl font-bold text-cream">{pkg.name}</h3>
-            <p className="mt-1 text-sm text-gold font-semibold">Request a Quote</p>
-            <ul className="mt-5 space-y-3 flex-1">
-              {pkg.features.map((f) => (
-                <li key={f} className="flex gap-2.5 text-sm text-cream/70"><Check size={18} className="text-gold shrink-0" /> {f}</li>
-              ))}
-            </ul>
-            <button onClick={onEnquire} className={`mt-6 ${pkg.popular ? 'btn-primary' : 'btn-secondary'} w-full`}>Enquire Now</button>
-          </div>
+        {packages.map((pkg, i) => (
+          <Reveal key={pkg.id} delay={i * 0.08} className="h-full">
+            <div className={`card-base p-7 relative flex flex-col h-full ${pkg.popular ? 'ring-2 ring-gold shadow-gold-lg' : ''} ${pkg.themed ? 'border-t-4 border-gold-deep' : ''}`}>
+              {pkg.popular && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gold text-navy text-xs font-bold uppercase tracking-wide flex items-center gap-1">
+                  <Star size={12} /> Most Popular
+                </span>
+              )}
+              {pkg.themed && (
+                <span className="absolute top-3 right-3 text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-gold-deep text-cream">2026 Theme</span>
+              )}
+              <h3 className="font-display text-xl font-bold text-cream">{pkg.name}</h3>
+              <p className="mt-1 text-sm text-gold font-semibold">Request a Quote</p>
+              <ul className="mt-5 space-y-3 flex-1">
+                {pkg.features.map((f) => (
+                  <li key={f} className="flex gap-2.5 text-sm text-cream/70"><Check size={18} className="text-gold shrink-0" /> {f}</li>
+                ))}
+              </ul>
+              <button onClick={onEnquire} className={`mt-6 ${pkg.popular ? 'btn-primary' : 'btn-secondary'} w-full`}>Enquire Now</button>
+            </div>
+          </Reveal>
         ))}
       </div>
       <div className="text-center mt-10">
@@ -151,15 +165,17 @@ function Directory({ initialSegment }) {
         <p className="text-center text-cream/60 py-12">No exhibitors listed yet{active !== 'all' ? ' for this segment' : ''}. Check back soon.</p>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((e) => (
-            <div key={e.id} className="card-base p-6 flex items-center gap-4 group">
-              <div className="icon-tile shrink-0"><DynamicIcon name={iconFor(e.segment_id)} size={24} /></div>
-              <div className="min-w-0">
-                <h3 className="font-bold text-cream truncate">{e.company}</h3>
-                <p className="text-sm text-gold">{e.segment_name}</p>
-                {e.description && <p className="text-xs text-cream/60 mt-1 line-clamp-2">{e.description}</p>}
+          {filtered.map((e, i) => (
+            <Reveal key={e.id} delay={(i % 3) * 0.06}>
+              <div className="card-base p-6 flex items-center gap-4 group h-full">
+                <div className="icon-tile shrink-0"><DynamicIcon name={iconFor(e.segment_id)} size={24} /></div>
+                <div className="min-w-0">
+                  <h3 className="font-display font-bold text-cream truncate">{e.company}</h3>
+                  <p className="text-sm text-gold">{e.segment_name}</p>
+                  {e.description && <p className="text-xs text-cream/60 mt-1 line-clamp-2">{e.description}</p>}
+                </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       )}
@@ -174,19 +190,23 @@ function DeveloperProjects() {
       <SectionHeading center eyebrow="2026 Theme Enhancement" title="Featured Developer Projects"
         subtitle="Flagship developments, master-planned communities and upcoming launches from our developer-exhibitors." />
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {DEV_PROJECTS.map((p) => (
-          <div key={p.name} className="card-base overflow-hidden group">
-            <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url('${p.img}')` }}>
-              <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold ${badge[p.status] || 'bg-navy-600 text-cream'}`}>{p.status}</span>
-            </div>
-            <div className="p-5">
-              <h3 className="font-bold text-cream group-hover:text-gold transition-colors">{p.name}</h3>
-              <div className="mt-2 flex items-center gap-3 text-xs text-cream/70">
-                <span className="flex items-center gap-1"><MapPin size={13} /> {p.location}</span>
-                <span className="flex items-center gap-1"><Layers size={13} /> {p.type}</span>
+        {DEV_PROJECTS.map((p, i) => (
+          <Reveal key={p.name} delay={(i % 4) * 0.07} className="h-full">
+            <div className="card-base overflow-hidden group h-full">
+              <div className="h-48 bg-cover bg-center relative overflow-hidden">
+                <img src={p.img} alt={p.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/70 to-transparent" />
+                <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold ${badge[p.status] || 'bg-navy-600 text-cream'}`}>{p.status}</span>
+              </div>
+              <div className="p-5">
+                <h3 className="font-display font-bold text-cream group-hover:text-gold transition-colors">{p.name}</h3>
+                <div className="mt-2 flex items-center gap-3 text-xs text-cream/70">
+                  <span className="flex items-center gap-1"><MapPin size={13} /> {p.location}</span>
+                  <span className="flex items-center gap-1"><Layers size={13} /> {p.type}</span>
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         ))}
       </div>
       <div className="mt-12 card-base p-8 text-center bg-navy-900/40">

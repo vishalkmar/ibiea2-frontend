@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Target, Award, Building2, Plane, MapPin, FileText, Download, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Target, Award, Building2, Plane, MapPin, FileText, Download, ArrowRight, CheckCircle2, Calendar } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import SectionHeading from '../components/ui/SectionHeading';
-import { EVENT } from '../data/siteData';
+import { Reveal } from '../components/ui/Motion';
+import { EVENT, SCHEDULE } from '../data/siteData';
 
 export default function About() {
   return (
@@ -31,12 +32,14 @@ export default function About() {
               { icon: Award, label: 'Awards Function', text: 'A formal ceremony recognising industry excellence.' },
               { icon: Target, label: 'Networking', text: 'Structured sessions, matchmaking and meetings.' },
               { icon: Plane, label: 'Family Tour', text: 'An optional Oman tour for accompanying families.' },
-            ].map((b) => (
-              <div key={b.label} className="card-base p-6">
-                <b.icon size={28} className="text-gold" />
-                <h3 className="mt-3 font-bold text-cream">{b.label}</h3>
-                <p className="mt-1 text-sm text-cream/70">{b.text}</p>
-              </div>
+            ].map((b, i) => (
+              <Reveal key={b.label} delay={i * 0.08}>
+                <div className="card-base p-6 h-full group">
+                  <div className="icon-tile"><b.icon size={24} /></div>
+                  <h3 className="mt-3 font-display font-bold text-lg text-cream">{b.label}</h3>
+                  <p className="mt-1 text-sm text-cream/70">{b.text}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -119,6 +122,38 @@ export default function About() {
               src="https://www.openstreetmap.org/export/embed.html?bbox=58.0,23.4,58.7,23.7&layer=mapnik"
               style={{ border: 0, filter: 'sepia(0.3) saturate(1.1)' }}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Event Agenda (moved from Home) */}
+      <section className="bg-transparent section-pad">
+        <div className="container-x">
+          <SectionHeading center eyebrow="Event Agenda" title="Three Days, One Stage"
+            subtitle="Exhibition, networking and recognition across the full programme." />
+          <div className="grid md:grid-cols-3 gap-6">
+            {SCHEDULE.map((day, i) => (
+              <Reveal key={day.day} delay={i * 0.08} className="h-full">
+              <div className="card-base p-6 h-full">
+                <div className="flex items-baseline justify-between border-b border-gold/20 pb-4 mb-4">
+                  <h3 className="font-display font-bold text-2xl text-gold">{day.day}</h3>
+                  <span className="text-xs font-semibold uppercase tracking-wide text-cream/50">{day.title}</span>
+                </div>
+                <ul className="space-y-3">
+                  {day.items.map((it, i) => (
+                    <li key={i} className="flex gap-3 text-sm">
+                      <span className="font-bold text-gold w-12 shrink-0">{it.time}</span>
+                      <span className="text-cream/70">{it.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              </Reveal>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 mt-12">
+            <button className="btn-primary"><Download size={18} /> Download Agenda</button>
+            <button className="btn-secondary"><Calendar size={18} /> Add Event To Calendar</button>
           </div>
         </div>
       </section>

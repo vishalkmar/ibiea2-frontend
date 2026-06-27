@@ -2,6 +2,7 @@ import { Check, MapPin, Plane, Sun, Mountain, Waves, ArrowRight } from 'lucide-r
 import PageHeader from '../components/ui/PageHeader';
 import SectionHeading from '../components/ui/SectionHeading';
 import EnquiryForm from '../components/ui/EnquiryForm';
+import { Reveal } from '../components/ui/Motion';
 import { FAMILY_TOUR } from '../data/siteData';
 
 const ICONS = [MapPin, Sun, Mountain, Waves];
@@ -29,27 +30,38 @@ export default function FamilyTour() {
           <SectionHeading center eyebrow="Day by Day" title="Your Itinerary"
             subtitle="A sample 4-day programme. Final itinerary confirmed with our tour partner." />
           <div className="relative">
-            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gold/30 -translate-x-1/2" />
-            <div className="space-y-8">
+            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gold/25 -translate-x-1/2" />
+            <div className="space-y-10">
               {FAMILY_TOUR.itinerary.map((day, i) => {
                 const Icon = ICONS[i % ICONS.length];
+                const flip = i % 2 === 1;
                 return (
-                  <div key={day.day} className={`lg:flex items-center gap-8 ${i % 2 ? 'lg:flex-row-reverse' : ''}`}>
-                    <div className="lg:w-1/2">
-                      <div className="card-base p-7">
+                  <Reveal key={day.day}>
+                    <div className={`lg:flex items-center gap-10 ${flip ? 'lg:flex-row-reverse' : ''}`}>
+                      {/* Image */}
+                      <div className="lg:w-1/2">
+                        <div className="group relative rounded-2xl overflow-hidden h-60 sm:h-72 border border-gold/15 shadow-card">
+                          <img src={day.img} alt={day.title} loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 via-navy-900/20 to-transparent" />
+                          <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-gold text-navy text-xs font-bold uppercase tracking-wide">{day.day}</span>
+                        </div>
+                      </div>
+                      {/* Timeline node */}
+                      <div className="hidden lg:flex w-12 h-12 rounded-full bg-gold-gradient text-navy font-bold items-center justify-center shrink-0 z-10 shadow-gold">{i + 1}</div>
+                      {/* Content */}
+                      <div className="lg:w-1/2 mt-5 lg:mt-0">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center text-gold"><Icon size={24} /></div>
+                          <div className="icon-tile !w-12 !h-12"><Icon size={22} /></div>
                           <div>
                             <p className="text-xs uppercase tracking-widest text-gold font-bold">{day.day}</p>
-                            <h3 className="font-bold text-lg text-cream">{day.title}</h3>
+                            <h3 className="font-display font-bold text-xl text-cream">{day.title}</h3>
                           </div>
                         </div>
-                        <p className="mt-4 text-cream/70">{day.desc}</p>
+                        <p className="mt-4 text-cream/70 leading-relaxed">{day.desc}</p>
                       </div>
                     </div>
-                    <div className="hidden lg:flex w-12 h-12 rounded-full bg-gold-gradient text-navy font-bold items-center justify-center shrink-0 z-10">{i + 1}</div>
-                    <div className="lg:w-1/2" />
-                  </div>
+                  </Reveal>
                 );
               })}
             </div>

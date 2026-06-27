@@ -14,13 +14,16 @@ function fmtSize(b) {
 
 export default function Documents() {
   const { data, loading, error, reload } = useApi(() => api.exhibitorDocuments());
+  const { data: me } = useApi(() => api.exhibitorMe());
   const docs = data || [];
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const fileRef = useRef(null);
 
-  const openInvoice = () => window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/exhibitor/invoice`, '_blank');
+  // Prefer an admin-uploaded official invoice; otherwise the generated printable one.
+  const officialInvoice = me?.invoice_url;
+  const openInvoice = () => window.open(officialInvoice || `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/exhibitor/invoice`, '_blank');
 
   const onFiles = async (files) => {
     if (!files || files.length === 0) return;
@@ -53,7 +56,7 @@ export default function Documents() {
               <div className="icon-tile !w-11 !h-11"><FileText size={20} /></div>
               <div>
                 <p className="font-semibold text-cream">Tax Invoice</p>
-                <p className="text-sm text-cream/60">Generated from your booking · printable PDF</p>
+                <p className="text-sm text-cream/60">{officialInvoice ? 'Official invoice issued by the organisers' : 'Generated from your booking · printable PDF'}</p>
               </div>
             </div>
             <button onClick={openInvoice} className="btn-ghost !py-2 text-sm"><Download size={16} /> View / Download</button>

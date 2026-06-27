@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Trash2, Plus, Pencil } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Trash2, Plus, Pencil, ListChecks, FileUp, Loader2, ExternalLink } from 'lucide-react';
 import DataTable from '../../components/dashboard/DataTable';
 import { StatusBadge } from '../../components/dashboard/widgets';
 import AsyncState from '../../components/dashboard/AsyncState';
@@ -8,6 +8,7 @@ import { useApi } from '../../hooks/useApi';
 import { api } from '../../lib/api';
 
 const STATUSES = ['enquiry', 'confirmed'];
+const DELIV_STATUS = ['pending', 'in_progress', 'delivered'];
 
 export default function SponsorMgmt({ role }) {
   const financeOnly = role === 'finance';
@@ -45,10 +46,19 @@ export default function SponsorMgmt({ role }) {
     await api.adminDeleteSponsor(id); reload();
   };
 
+  const [delivFor, setDelivFor] = useState(null); // sponsor row whose deliverables we manage
+
   const columns = [
     { key: 'company', label: 'Sponsor', render: (r) => <span className="font-semibold text-cream">{r.company}</span> },
     { key: 'tier_name', label: 'Tier', render: (r) => <span className="font-semibold text-gold">{r.tier_name || '—'}</span> },
     { key: 'status', label: 'Status', render: (r) => <StatusBadge status={r.status} /> },
+    { key: 'deliverables', label: 'Deliverables', render: (r) => (
+      !financeOnly ? (
+        <button onClick={() => setDelivFor(r)} className="flex items-center gap-1.5 text-cream/80 hover:text-gold" title="Manage branding deliverables">
+          <ListChecks size={14} className="text-gold" /> Manage
+        </button>
+      ) : <span className="text-cream/40 text-xs">—</span>
+    )},
     { key: 'actions', label: 'Actions', render: (r) => (
       !financeOnly ? (
         <div className="flex gap-2">
@@ -106,6 +116,71 @@ export default function SponsorMgmt({ role }) {
           </form>
         </Modal>
       )}
+
+      {delivFor && <DeliverablesModal sponsor={delivFor} onClose={() => setDelivFor(null)} />}
     </div>
+  );
+}
+
+function DeliverablesModal({ sponsor, onClose }) {
+  const { data, loading, error, reload } = useApi(() => api.adminDeliverables(sponsor.id));
+  const items = data || [];
+  const [newLabel, setNewLabel] = useState('');
+  const [busy, setBusy] = useState(false);
+  const proofInput = useRef(null);
+  const [proofFor, setProofFor] = useState(null);
+  const [proofBusy, setProofBusy] = useState(null);
+
+  const add = async (e) => {
+    e.preventDefault();
+    if (!newLabel.trim()) return;
+    setBusy(true);
+    try { await api.adminAddDeliverable(sponsor.id, { label: newLabel.trim() }); setNewLabel(''); reload(); }
+    finally { setBusy(false); }
+  };
+  const setStatus = async (id, status) => { await api.adminUpdateDeliverable(id, { status }); reload(); };
+  const remove = async (id) => { await api.adminDeleteDeliverable(id); reload(); };
+  const pickProof = (id) => { setProofFor(id); proofInput.current?.click(); };
+  const onProof = async (e) => {
+    const file = e.target.files?.[0]; e.target.value = '';
+    if (!file || !proofFor) return;
+    setProofBusy(proofFor);
+    try { await api.adminUploadDeliverableProof(proofFor, file); reload(); }
+    catch (er) { alert(er.message); } finally { setProofBusy(null); setProofFor(null); }
+  };
+
+  return (
+    <Modal title={`Deliverables — ${sponsor.company}`} onClose={onClose}>
+      <input ref={proofInput} type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden" onChange={onProof} />
+      <AsyncState loading={loading} error={error} height="min-h-[120px]">
+        {items.length === 0 ? (
+          <p className="text-cream/60 text-sm py-4 text-center">No deliverables yet. Add the first one below.</p>
+        ) : (
+          <ul className="space-y-3">
+            {items.map((d) => (
+              <li key={d.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-navy-900/40 border border-gold/10">
+                <div className="min-w-0">
+                  <p className="font-medium text-cream text-sm truncate">{d.label}</p>
+                  {d.proof_url && <a href={d.proof_url} target="_blank" rel="noreferrer" className="text-xs text-gold flex items-center gap-1 mt-0.5">Proof <ExternalLink size={11} /></a>}
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <select value={d.status} onChange={(e) => setStatus(d.id, e.target.value)} className="field !py-1.5 !px-2 text-xs w-32">
+                    {DELIV_STATUS.map((s) => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
+                  </select>
+                  <button onClick={() => pickProof(d.id)} disabled={proofBusy === d.id} className="text-cream/60 hover:text-gold" title="Upload proof">
+                    {proofBusy === d.id ? <Loader2 size={15} className="animate-spin" /> : <FileUp size={15} />}
+                  </button>
+                  <button onClick={() => remove(d.id)} className="text-cream/60 hover:text-red-400" title="Remove"><Trash2 size={15} /></button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </AsyncState>
+      <form onSubmit={add} className="flex gap-2 mt-5">
+        <input className="field flex-1" placeholder="New deliverable (e.g. Stage backdrop logo)" value={newLabel} onChange={(e) => setNewLabel(e.target.value)} />
+        <button type="submit" disabled={busy} className="btn-primary !py-2 disabled:opacity-60"><Plus size={16} /> Add</button>
+      </form>
+    </Modal>
   );
 }
